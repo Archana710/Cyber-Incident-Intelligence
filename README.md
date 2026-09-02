@@ -1,3 +1,4 @@
+
 # Cyber-Incident-Intelligence
 AI-Powered Cyber Incident Intelligence and Threat Analysis System
 # Cyber-Incident-Intelligence
@@ -118,3 +119,15 @@ Future Scope ------------------
 - Automated Incident Response
 - Advanced Attack Detection
 - Cloud Security Integration
+
+Cyber-Incident-Intelligence
+│
+├── README.md
+│
+├── frontend
+│   ├── index.html
+│   │
+│   ├── css
+│   │   └── style.css
+│   │
+│   └── js
