@@ -1,0 +1,224 @@
+// ==========================================
+// NAVIGATION
+// ==========================================
+
+const navLinks = document.querySelectorAll(".nav-link");
+const sections = document.querySelectorAll(".page-section");
+
+const pageTitle = document.getElementById("pageTitle");
+const pageSubtitle = document.getElementById("pageSubtitle");
+
+const pageInformation = {
+
+    dashboard: {
+        title: "Security Overview",
+        subtitle: "Monitor, investigate and respond to cyber incidents."
+    },
+
+    incidents: {
+        title: "Incident Investigation",
+        subtitle: "Analyze correlated security events and attack patterns."
+    },
+
+    events: {
+        title: "Security Events",
+        subtitle: "Raw security events collected from monitored sources."
+    },
+
+    threats: {
+        title: "Threat Intelligence",
+        subtitle: "Investigate suspicious indicators and potential threats."
+    },
+
+    reports: {
+        title: "Incident Reports",
+        subtitle: "Generated intelligence and investigation reports."
+    }
+
+};
+
+
+navLinks.forEach(link => {
+
+    link.addEventListener("click", function(event) {
+
+        event.preventDefault();
+
+        const sectionName = this.dataset.section;
+
+        // Remove active class
+        navLinks.forEach(item => {
+            item.classList.remove("active");
+        });
+
+        sections.forEach(section => {
+            section.classList.remove("active-section");
+        });
+
+        // Activate clicked menu
+        this.classList.add("active");
+
+        document
+            .getElementById(sectionName)
+            .classList.add("active-section");
+
+        // Update header
+        pageTitle.textContent =
+            pageInformation[sectionName].title;
+
+        pageSubtitle.textContent =
+            pageInformation[sectionName].subtitle;
+
+    });
+
+});
+
+
+// ==========================================
+// INCIDENT VIEW
+// ==========================================
+
+function showIncident() {
+
+    const incidentLink =
+        document.querySelector('[data-section="incidents"]');
+
+    incidentLink.click();
+
+}
+
+
+// ==========================================
+// INCIDENT TREND CHART
+// ==========================================
+
+const incidentCanvas =
+    document.getElementById("incidentChart");
+
+if (incidentCanvas) {
+
+    new Chart(incidentCanvas, {
+
+        type: "line",
+
+        data: {
+
+            labels: [
+                "Mon",
+                "Tue",
+                "Wed",
+                "Thu",
+                "Fri",
+                "Sat",
+                "Sun"
+            ],
+
+            datasets: [
+
+                {
+                    label: "Incidents",
+
+                    data: [
+                        12,
+                        19,
+                        14,
+                        25,
+                        18,
+                        30,
+                        24
+                    ],
+
+                    borderWidth: 3,
+
+                    tension: 0.4,
+
+                    fill: false
+                }
+
+            ]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+
+            scales: {
+
+                y: {
+                    beginAtZero: true
+                }
+
+            }
+
+        }
+
+    });
+
+}
+
+
+// ==========================================
+// RISK DISTRIBUTION CHART
+// ==========================================
+
+const riskCanvas =
+    document.getElementById("riskChart");
+
+if (riskCanvas) {
+
+    new Chart(riskCanvas, {
+
+        type: "doughnut",
+
+        data: {
+
+            labels: [
+                "Critical",
+                "High",
+                "Medium",
+                "Low"
+            ],
+
+            datasets: [
+
+                {
+                    data: [
+                        7,
+                        23,
+                        41,
+                        57
+                    ],
+
+                    borderWidth: 0
+                }
+
+            ]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+            plugins: {
+
+                legend: {
+                    display: false
+                }
+
+            }
+
+        }
+
+    });
+
+}
