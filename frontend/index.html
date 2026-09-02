@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Cyber Incident Intelligence</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <div class="logo-icon">🛡️</div>
+
+            <div>
+                <h2>CyberIntel</h2>
+                <span>Incident Intelligence</span>
+            </div>
+        </div>
+
+        <nav>
+
+            <a href="#" class="nav-link active" data-section="dashboard">
+                <span>📊</span>
+                Dashboard
+            </a>
+
+            <a href="#" class="nav-link" data-section="incidents">
+                <span>🚨</span>
+                Incidents
+                <span class="badge">7</span>
+            </a>
+
+            <a href="#" class="nav-link" data-section="events">
+                <span>🔍</span>
+                Security Events
+            </a>
+
+            <a href="#" class="nav-link" data-section="threats">
+                <span>🌐</span>
+                Threat Intelligence
+            </a>
+
+            <a href="#" class="nav-link" data-section="reports">
+                <span>📄</span>
+                Reports
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <a href="#">
+                ⚙️ Settings
+            </a>
+
+            <a href="#">
+                ❓ Help
+            </a>
+
+            <div class="system-status">
+                <span class="status-dot"></span>
+                System Operational
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- ================= MAIN CONTENT ================= -->
+
+    <main class="main-content">
+
+        <!-- HEADER -->
+
+        <header class="topbar">
+
+            <div>
+                <h1 id="pageTitle">Security Overview</h1>
+                <p id="pageSubtitle">
+                    Monitor, investigate and respond to cyber incidents.
+                </p>
+            </div>
+
+            <div class="topbar-right">
+
+                <button class="icon-button" title="Notifications">
+                    🔔
+                    <span class="notification-dot"></span>
+                </button>
+
+                <div class="profile">
+
+                    <div class="avatar">
+                        A
+                    </div>
+
+                    <div>
+                        <strong>Security Analyst</strong>
+                        <small>Administrator</small>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- ================= DASHBOARD ================= -->
+
+        <section id="dashboard" class="page-section active-section">
+
+            <!-- KPI CARDS -->
+
+            <div class="stats-grid">
+
+                <div class="stat-card">
+
+                    <div class="stat-icon blue">
+                        📊
+                    </div>
+
+                    <div>
+                        <span>Total Incidents</span>
+                        <h2>128</h2>
+                        <small class="positive">↑ 12% this week</small>
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon red">
+                        🚨
+                    </div>
+
+                    <div>
+                        <span>Critical</span>
+                        <h2>7</h2>
+                        <small class="negative">↑ 2 new today</small>
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon orange">
+                        ⚠️
+                    </div>
+
+                    <div>
+                        <span>High Risk</span>
+                        <h2>23</h2>
+                        <small>Needs investigation</small>
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon green">
+                        ✓
+                    </div>
+
+                    <div>
+                        <span>Resolved</span>
+                        <h2>86</h2>
+                        <small class="positive">67% resolution rate</small>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- CHARTS -->
+
+            <div class="charts-grid">
+
+                <div class="card chart-card">
+
+                    <div class="card-header">
+
+                        <div>
+                            <h3>Incident Trend</h3>
+                            <p>Security incidents over the last 7 days</p>
+                        </div>
+
+                        <select>
+                            <option>Last 7 Days</option>
+                            <option>Last 30 Days</option>
+                        </select>
+
+                    </div>
+
+                    <canvas id="incidentChart"></canvas>
+
+                </div>
+
+
+                <div class="card chart-card">
+
+                    <div class="card-header">
+
+                        <div>
+                            <h3>Risk Distribution</h3>
+                            <p>Current incident severity</p>
+                        </div>
+
+                    </div>
+
+                    <div class="donut-container">
+                        <canvas id="riskChart"></canvas>
+                    </div>
+
+                    <div class="risk-legend">
+
+                        <span>
+                            <i class="legend critical"></i>
+                            Critical
+                        </span>
+
+                        <span>
+                            <i class="legend high"></i>
+                            High
+                        </span>
+
+                        <span>
+                            <i class="legend medium"></i>
+                            Medium
+                        </span>
+
+                        <span>
+                            <i class="legend low"></i>
+                            Low
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- RECENT INCIDENTS -->
+
+            <div class="card incidents-card">
+
+                <div class="card-header">
+
+                    <div>
+                        <h3>Recent Incidents</h3>
+                        <p>Latest detected security incidents</p>
+                    </div>
+
+                    <button class="view-button">
+                        View All
+                    </button>
+
+                </div>
+
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+                                <th>Incident</th>
+                                <th>Type</th>
+                                <th>Risk</th>
+                                <th>Status</th>
+                                <th>Detected</th>
+                                <th>Action</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+
+                                <td>
+                                    <strong>INC-1024</strong>
+                                    <small>Possible Account Compromise</small>
+                                </td>
+
+                                <td>Credential Attack</td>
+
+                                <td>
+                                    <span class="risk critical-risk">
+                                        Critical · 92
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span class="status investigating">
+                                        Investigating
+                                    </span>
+                                </td>
+
+                                <td>5 min ago</td>
+
+                                <td>
+                                    <button class="details-btn"
+                                            onclick="showIncident()">
+                                        View
+                                    </button>
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+
+                                <td>
+                                    <strong>INC-1023</strong>
+                                    <small>Suspicious Network Activity</small>
+                                </td>
+
+                                <td>Network Anomaly</td>
+
+                                <td>
+                                    <span class="risk high-risk">
+                                        High · 78
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span class="status open">
+                                        Open
+                                    </span>
+                                </td>
+
+                                <td>18 min ago</td>
+
+                                <td>
+                                    <button class="details-btn"
+                                            onclick="showIncident()">
+                                        View
+                                    </button>
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+
+                                <td>
+                                    <strong>INC-1022</strong>
+                                    <small>Multiple Failed Logins</small>
+                                </td>
+
+                                <td>Brute Force</td>
+
+                                <td>
+                                    <span class="risk medium-risk">
+                                        Medium · 54
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span class="status resolved">
+                                        Resolved
+                                    </span>
+                                </td>
+
+                                <td>42 min ago</td>
+
+                                <td>
+                                    <button class="details-btn">
+                                        View
+                                    </button>
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= INCIDENT INVESTIGATION ================= -->
+
+        <section id="incidents" class="page-section">
+
+            <div class="section-title">
+                <div>
+                    <h2>Incident Investigation</h2>
+                    <p>Analyze correlated security events and attack patterns.</p>
+                </div>
+
+                <button class="primary-button">
+                    + New Incident
+                </button>
+            </div>
+
+
+            <div class="incident-overview">
+
+                <div class="incident-main">
+
+                    <div class="incident-heading">
+
+                        <div>
+                            <span class="incident-id">INC-1024</span>
+                            <h2>Possible Account Compromise</h2>
+                            <p>Detected 5 minutes ago</p>
+                        </div>
+
+                        <span class="severity critical">
+                            CRITICAL
+                        </span>
+
+                    </div>
+
+
+                    <div class="risk-score">
+
+                        <div>
+                            <span>Risk Score</span>
+                            <strong>92<span>/100</span></strong>
+                        </div>
+
+                        <div class="progress">
+                            <div style="width:92%"></div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="attack-story">
+
+                        <h3>🔗 Attack Story</h3>
+
+                        <div class="timeline">
+
+                            <div class="timeline-item">
+                                <span class="timeline-number">1</span>
+
+                                <div>
+                                    <strong>Multiple Failed Logins</strong>
+                                    <p>50 failed authentication attempts detected.</p>
+                                </div>
+                            </div>
+
+
+                            <div class="timeline-item">
+                                <span class="timeline-number">2</span>
+
+                                <div>
+                                    <strong>Unusual Successful Login</strong>
+                                    <p>Login detected from an unusual location.</p>
+                                </div>
+                            </div>
+
+
+                            <div class="timeline-item">
+                                <span class="timeline-number">3</span>
+
+                                <div>
+                                    <strong>Admin System Access</strong>
+                                    <p>User accessed a privileged system.</p>
+                                </div>
+                            </div>
+
+
+                            <div class="timeline-item">
+                                <span class="timeline-number">4</span>
+
+                                <div>
+                                    <strong>Sensitive File Download</strong>
+                                    <p>Multiple sensitive files were accessed.</p>
+                                </div>
+                            </div>
+
+
+                            <div class="timeline-item">
+                                <span class="timeline-number">5</span>
+
+                                <div>
+                                    <strong>Suspicious IP Communication</strong>
+                                    <p>Connection established with a suspicious IP.</p>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- INTELLIGENCE PANEL -->
+
+                <div class="intelligence-panel">
+
+                    <h3>🧠 AI Intelligence</h3>
+
+                    <div class="analysis-box">
+
+                        <span>Threat Assessment</span>
+
+                        <strong>
+                            Possible Account Compromise
+                        </strong>
+
+                        <p>
+                            Multiple related security events indicate
+                            possible credential compromise and
+                            sensitive data access.
+                        </p>
+
+                    </div>
+
+
+                    <h3>🛡️ Recommended Response</h3>
+
+                    <ul class="response-list">
+
+                        <li>Disable affected user account</li>
+                        <li>Revoke active sessions</li>
+                        <li>Investigate affected device</li>
+                        <li>Review downloaded files</li>
+                        <li>Investigate suspicious IP</li>
+
+                    </ul>
+
+
+                    <button class="report-button">
+                        📄 Generate Incident Report
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= SECURITY EVENTS ================= -->
+
+        <section id="events" class="page-section">
+
+            <div class="section-title">
+
+                <div>
+                    <h2>Security Events</h2>
+                    <p>Raw security events collected from monitored sources.</p>
+                </div>
+
+                <button class="primary-button">
+                    + Add Event
+                </button>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="event-filters">
+
+                    <input
+                        type="text"
+                        placeholder="🔍 Search events..."
+                    >
+
+                    <select>
+                        <option>All Event Types</option>
+                        <option>Failed Login</option>
+                        <option>Successful Login</option>
+                        <option>File Access</option>
+                        <option>Network Activity</option>
+                    </select>
+
+                    <select>
+                        <option>All Risk Levels</option>
+                        <option>Critical</option>
+                        <option>High</option>
+                        <option>Medium</option>
+                        <option>Low</option>
+                    </select>
+
+                </div>
+
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+                                <th>Event ID</th>
+                                <th>Event Type</th>
+                                <th>Source IP</th>
+                                <th>User</th>
+                                <th>Risk</th>
+                                <th>Timestamp</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+                                <td>EVT-5001</td>
+                                <td>Failed Login</td>
+                                <td>192.168.1.10</td>
+                                <td>admin</td>
+                                <td><span class="risk high-risk">High</span></td>
+                                <td>10:42 PM</td>
+                            </tr>
+
+                            <tr>
+                                <td>EVT-5002</td>
+                                <td>File Access</td>
+                                <td>192.168.1.10</td>
+                                <td>admin</td>
+                                <td><span class="risk critical-risk">Critical</span></td>
+                                <td>10:45 PM</td>
+                            </tr>
+
+                            <tr>
+                                <td>EVT-5003</td>
+                                <td>Network Activity</td>
+                                <td>45.23.18.5</td>
+                                <td>system</td>
+                                <td><span class="risk medium-risk">Medium</span></td>
+                                <td>10:47 PM</td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= THREAT INTELLIGENCE ================= -->
+
+        <section id="threats" class="page-section">
+
+            <div class="section-title">
+
+                <div>
+                    <h2>Threat Intelligence</h2>
+                    <p>Investigate suspicious indicators and potential threats.</p>
+                </div>
+
+            </div>
+
+
+            <div class="threat-grid">
+
+                <div class="threat-card">
+
+                    <span class="threat-icon">🌐</span>
+
+                    <h3>Suspicious IPs</h3>
+
+                    <strong>34</strong>
+
+                    <p>Indicators detected</p>
+
+                </div>
+
+
+                <div class="threat-card">
+
+                    <span class="threat-icon">🔗</span>
+
+                    <h3>Suspicious URLs</h3>
+
+                    <strong>18</strong>
+
+                    <p>Potential malicious URLs</p>
+
+                </div>
+
+
+                <div class="threat-card">
+
+                    <span class="threat-icon">🦠</span>
+
+                    <h3>Malware Indicators</h3>
+
+                    <strong>11</strong>
+
+                    <p>Potential malware IOCs</p>
+
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="card-header">
+
+                    <div>
+                        <h3>Indicators of Compromise</h3>
+                        <p>Recently identified threat indicators</p>
+                    </div>
+
+                </div>
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+                                <th>IOC</th>
+                                <th>Type</th>
+                                <th>Threat Level</th>
+                                <th>Related Incidents</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+                                <td>45.23.18.5</td>
+                                <td>IP Address</td>
+                                <td>
+                                    <span class="risk critical-risk">
+                                        Critical
+                                    </span>
+                                </td>
+                                <td>4</td>
+                            </tr>
+
+                            <tr>
+                                <td>suspicious-example.com</td>
+                                <td>Domain</td>
+                                <td>
+                                    <span class="risk high-risk">
+                                        High
+                                    </span>
+                                </td>
+                                <td>2</td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= REPORTS ================= -->
+
+        <section id="reports" class="page-section">
+
+            <div class="section-title">
+
+                <div>
+                    <h2>Incident Reports</h2>
+                    <p>Generated intelligence and investigation reports.</p>
+                </div>
+
+                <button class="primary-button">
+                    + Generate Report
+                </button>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="empty-state">
+
+                    <div class="empty-icon">
+                        📄
+                    </div>
+
+                    <h3>Incident Reports</h3>
+
+                    <p>
+                        Automated reports generated from
+                        correlated security incidents will appear here.
+                    </p>
+
+                    <button class="primary-button">
+                        Generate Report
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- JavaScript -->
+    <script src="js/script.js"></script>
+
+</body>
+
+</html>
