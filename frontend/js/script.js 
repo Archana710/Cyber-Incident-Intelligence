@@ -1,0 +1,1280 @@
+// ==========================================
+// BACKEND CONFIGURATION
+// ==========================================
+
+const API_BASE_URL = "http://127.0.0.1:8000";
+
+
+// ==========================================
+// LOGIN
+// ==========================================
+
+const loginForm =
+    document.getElementById("loginForm");
+
+
+if (loginForm) {
+
+    loginForm.addEventListener(
+        "submit",
+        async function(event) {
+
+            event.preventDefault();
+
+            const email =
+                document.getElementById("email").value;
+
+            const password =
+                document.getElementById("password").value;
+
+            const message =
+                document.getElementById("loginMessage");
+
+
+            message.textContent =
+                "Connecting to backend...";
+
+            message.style.color =
+                "#2563eb";
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        `${API_BASE_URL}/auth/login`,
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body: JSON.stringify({
+                                email: email,
+                                password: password
+                            })
+                        }
+                    );
+
+
+                if (!response.ok) {
+                    throw new Error(
+                        "Invalid login"
+                    );
+                }
+
+
+                const data =
+                    await response.json();
+
+
+                localStorage.setItem(
+                    "access_token",
+                    data.access_token
+                );
+
+
+                window.location.href =
+                    "index.html";
+
+            }
+
+            catch (error) {
+
+                message.textContent =
+                    "Backend is not connected or login failed.";
+
+                message.style.color =
+                    "#dc2626";
+
+            }
+
+        }
+    );
+
+}
+
+
+// ==========================================
+// LOGOUT
+// ==========================================
+
+function logout() {
+
+    localStorage.removeItem(
+        "access_token"
+    );
+
+    window.location.href =
+        "login.html";
+}
+
+
+// ==========================================
+// CHECK LOGIN
+// ==========================================
+
+if (
+    window.location.pathname.includes(
+        "index.html"
+    )
+) {
+
+    const token =
+        localStorage.getItem(
+            "access_token"
+        );
+
+    /*
+       Backend authentication will be
+       enforced later.
+
+       For now, dashboard can be opened
+       while frontend development is running.
+    */
+
+}
+
+
+// ==========================================
+// NAVIGATION
+// ==========================================
+
+const navLinks =
+    document.querySelectorAll(
+        ".nav-link"
+    );
+
+const sections =
+    document.querySelectorAll(
+        ".page-section"
+    );
+
+const pageTitle =
+    document.getElementById(
+        "pageTitle"
+    );
+
+const pageSubtitle =
+    document.getElementById(
+        "pageSubtitle"
+    );
+
+
+const pageInformation = {
+
+    dashboard: {
+        title: "Security Overview",
+        subtitle:
+            "Monitor, investigate and respond to cyber incidents."
+    },
+
+    incidents: {
+        title: "Incident Investigation",
+        subtitle:
+            "Analyze correlated security events and attack patterns."
+    },
+
+    events: {
+        title: "Security Events",
+        subtitle:
+            "Raw security events collected from monitored sources."
+    },
+
+    threats: {
+        title: "Threat Intelligence",
+        subtitle:
+            "Investigate suspicious indicators and potential threats."
+    },
+
+    reports: {
+        title: "Incident Reports",
+        subtitle:
+            "Generated intelligence and investigation reports."
+    }
+
+};
+
+
+navLinks.forEach(link => {
+
+    link.addEventListener(
+        "click",
+        function(event) {
+
+            event.preventDefault();
+
+            const sectionName =
+                this.dataset.section;
+
+            openSection(sectionName);
+
+        }
+    );
+
+});
+
+
+function openSection(sectionName) {
+
+    navLinks.forEach(link => {
+
+        link.classList.remove(
+            "active"
+        );
+
+    });
+
+
+    sections.forEach(section => {
+
+        section.classList.remove(
+            "active-section"
+        );
+
+    });
+
+
+    const selectedLink =
+        document.querySelector(
+            `[data-section="${sectionName}"]`
+        );
+
+
+    const selectedSection =
+        document.getElementById(
+            sectionName
+        );
+
+
+    if (selectedLink) {
+
+        selectedLink.classList.add(
+            "active"
+        );
+
+    }
+
+
+    if (selectedSection) {
+
+        selectedSection.classList.add(
+            "active-section"
+        );
+
+    }
+
+
+    if (pageInformation[sectionName]) {
+
+        pageTitle.textContent =
+            pageInformation[sectionName].title;
+
+        pageSubtitle.textContent =
+            pageInformation[sectionName].subtitle;
+
+    }
+
+}
+
+
+// ==========================================
+// BACKEND STATUS
+// ==========================================
+
+async function checkBackendStatus() {
+
+    const statusDot =
+        document.getElementById(
+            "systemStatus"
+        );
+
+    const statusText =
+        document.getElementById(
+            "systemStatusText"
+        );
+
+
+    if (!statusDot || !statusText)
+        return;
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_BASE_URL}/health`
+            );
+
+
+        if (!response.ok)
+            throw new Error();
+
+
+        statusDot.classList.add(
+            "online"
+        );
+
+        statusDot.classList.remove(
+            "offline"
+        );
+
+        statusText.textContent =
+            "Backend Online";
+
+    }
+
+    catch {
+
+        statusDot.classList.add(
+            "offline"
+        );
+
+        statusText.textContent =
+            "Backend Offline";
+
+    }
+
+}
+
+
+// ==========================================
+// DASHBOARD DATA
+// ==========================================
+
+async function loadDashboard() {
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_BASE_URL}/dashboard/summary`
+            );
+
+
+        if (!response.ok)
+            throw new Error();
+
+
+        const data =
+            await response.json();
+
+
+        document.getElementById(
+            "totalIncidents"
+        ).textContent =
+            data.total_incidents ?? 0;
+
+
+        document.getElementById(
+            "criticalIncidents"
+        ).textContent =
+            data.critical_incidents ?? 0;
+
+
+        document.getElementById(
+            "highIncidents"
+        ).textContent =
+            data.high_incidents ?? 0;
+
+
+        document.getElementById(
+            "resolvedIncidents"
+        ).textContent =
+            data.resolved_incidents ?? 0;
+
+
+        document.getElementById(
+            "incidentBadge"
+        ).textContent =
+            data.open_incidents ?? 0;
+
+
+        createIncidentChart(
+            data.incident_trend || {}
+        );
+
+
+        createRiskChart(
+            data.risk_distribution || {}
+        );
+
+
+    }
+
+    catch {
+
+        console.log(
+            "Dashboard data waiting for backend."
+        );
+
+    }
+
+}
+
+
+// ==========================================
+// INCIDENT CHART
+// ==========================================
+
+let incidentChart = null;
+
+
+function createIncidentChart(data) {
+
+    const canvas =
+        document.getElementById(
+            "incidentChart"
+        );
+
+
+    if (!canvas)
+        return;
+
+
+    if (incidentChart) {
+
+        incidentChart.destroy();
+
+    }
+
+
+    const labels =
+        Object.keys(data);
+
+
+    const values =
+        Object.values(data);
+
+
+    incidentChart =
+        new Chart(
+            canvas,
+            {
+
+                type: "line",
+
+                data: {
+
+                    labels: labels,
+
+                    datasets: [
+
+                        {
+
+                            label:
+                                "Incidents",
+
+                            data:
+                                values,
+
+                            borderWidth: 3,
+
+                            tension: 0.4,
+
+                            fill: false
+
+                        }
+
+                    ]
+
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    plugins: {
+
+                        legend: {
+                            display: false
+                        }
+
+                    },
+
+                    scales: {
+
+                        y: {
+
+                            beginAtZero: true
+
+                        }
+
+                    }
+
+                }
+
+            }
+        );
+
+}
+
+
+// ==========================================
+// RISK CHART
+// ==========================================
+
+let riskChart = null;
+
+
+function createRiskChart(data) {
+
+    const canvas =
+        document.getElementById(
+            "riskChart"
+        );
+
+
+    if (!canvas)
+        return;
+
+
+    if (riskChart) {
+
+        riskChart.destroy();
+
+    }
+
+
+    const labels = [
+        "Critical",
+        "High",
+        "Medium",
+        "Low"
+    ];
+
+
+    const values = [
+
+        data.Critical || 0,
+        data.High || 0,
+        data.Medium || 0,
+        data.Low || 0
+
+    ];
+
+
+    riskChart =
+        new Chart(
+            canvas,
+            {
+
+                type: "doughnut",
+
+                data: {
+
+                    labels: labels,
+
+                    datasets: [
+
+                        {
+
+                            data: values,
+
+                            borderWidth: 0
+
+                        }
+
+                    ]
+
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    plugins: {
+
+                        legend: {
+                            position: "bottom"
+                        }
+
+                    }
+
+                }
+
+            }
+        );
+
+}
+
+
+// ==========================================
+// INCIDENTS
+// ==========================================
+
+async function loadIncidents() {
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_BASE_URL}/incidents`
+            );
+
+
+        if (!response.ok)
+            throw new Error();
+
+
+        const incidents =
+            await response.json();
+
+
+        renderIncidents(
+            incidents
+        );
+
+    }
+
+    catch {
+
+        console.log(
+            "Incident data waiting for backend."
+        );
+
+    }
+
+}
+
+
+function renderIncidents(incidents) {
+
+    const body =
+        document.getElementById(
+            "recentIncidentsBody"
+        );
+
+
+    if (!body)
+        return;
+
+
+    if (!incidents.length) {
+
+        body.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="6"
+                    class="empty-table">
+
+                    No incidents detected.
+
+                </td>
+
+            </tr>
+
+        `;
+
+        return;
+
+    }
+
+
+    body.innerHTML =
+        incidents.map(
+            incident => `
+
+        <tr>
+
+            <td>
+
+                <strong>
+                    ${incident.incident_id}
+                </strong>
+
+                <small>
+                    ${incident.incident_name}
+                </small>
+
+            </td>
+
+            <td>
+                ${incident.type || "Unknown"}
+            </td>
+
+            <td>
+
+                <span
+                    class="risk ${getRiskClass(
+                        incident.severity
+                    )}">
+
+                    ${incident.severity}
+                    ·
+                    ${incident.risk_score}
+
+                </span>
+
+            </td>
+
+            <td>
+                ${incident.status}
+            </td>
+
+            <td>
+                ${incident.detected_at || "-"}
+            </td>
+
+            <td>
+
+                <button
+                    class="view-button"
+                    onclick="viewIncident(
+                        '${incident.incident_id}'
+                    )">
+
+                    View
+
+                </button>
+
+            </td>
+
+        </tr>
+
+    `
+        ).join("");
+
+}
+
+
+function getRiskClass(severity) {
+
+    if (!severity)
+        return "medium-risk";
+
+
+    const value =
+        severity.toLowerCase();
+
+
+    if (value === "critical")
+        return "critical-risk";
+
+    if (value === "high")
+        return "high-risk";
+
+    if (value === "medium")
+        return "medium-risk";
+
+    return "low-risk";
+
+}
+
+
+// ==========================================
+// VIEW INCIDENT
+// ==========================================
+
+async function viewIncident(id) {
+
+    openSection(
+        "incidents"
+    );
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_BASE_URL}/incidents/${id}`
+            );
+
+
+        if (!response.ok)
+            throw new Error();
+
+
+        const incident =
+            await response.json();
+
+
+        renderIncidentDetails(
+            incident
+        );
+
+    }
+
+    catch {
+
+        console.log(
+            "Incident details unavailable."
+        );
+
+    }
+
+}
+
+
+function renderIncidentDetails(
+    incident
+) {
+
+    const container =
+        document.getElementById(
+            "incidentDetails"
+        );
+
+
+    if (!container)
+        return;
+
+
+    container.innerHTML = `
+
+        <div class="incident-overview">
+
+            <div class="incident-main">
+
+                <span>
+                    ${incident.incident_id}
+                </span>
+
+                <h2>
+                    ${incident.incident_name}
+                </h2>
+
+                <p>
+                    ${incident.description || ""}
+                </p>
+
+                <br>
+
+                <h3>
+                    Attack Story
+                </h3>
+
+                <br>
+
+                <div class="timeline">
+
+                    ${(incident.events || [])
+                        .map(
+                            (event, index) => `
+
+                        <div class="timeline-item">
+
+                            <span
+                                class="timeline-number">
+
+                                ${index + 1}
+
+                            </span>
+
+                            <div>
+
+                                <strong>
+                                    ${event.event_type}
+                                </strong>
+
+                                <p>
+                                    ${event.description || ""}
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    `
+                        )
+                        .join("")}
+
+                </div>
+
+            </div>
+
+
+            <div class="intelligence-panel">
+
+                <h3>
+                    🧠 AI Intelligence
+                </h3>
+
+                <div class="analysis-box">
+
+                    <strong>
+                        ${incident.analysis || "Analysis pending"}
+                    </strong>
+
+                    <p>
+                        Confidence:
+                        ${incident.confidence_score || 0}%
+                    </p>
+
+                </div>
+
+
+                <h3>
+                    🛡️ Recommended Response
+                </h3>
+
+                <ul class="response-list">
+
+                    ${(incident.recommended_actions || [])
+                        .map(
+                            action => `
+
+                        <li>
+                            ${action}
+                        </li>
+
+                    `
+                        )
+                        .join("")}
+
+                </ul>
+
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+
+// ==========================================
+// SECURITY EVENTS
+// ==========================================
+
+async function loadEvents() {
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_BASE_URL}/events`
+            );
+
+
+        if (!response.ok)
+            throw new Error();
+
+
+        const events =
+            await response.json();
+
+
+        renderEvents(events);
+
+    }
+
+    catch {
+
+        console.log(
+            "Security events waiting for backend."
+        );
+
+    }
+
+}
+
+
+function renderEvents(events) {
+
+    const body =
+        document.getElementById(
+            "eventsBody"
+        );
+
+
+    if (!body)
+        return;
+
+
+    if (!events.length) {
+
+        body.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="6"
+                    class="empty-table">
+
+                    No security events available.
+
+                </td>
+
+            </tr>
+
+        `;
+
+        return;
+
+    }
+
+
+    body.innerHTML =
+        events.map(
+            event => `
+
+        <tr>
+
+            <td>
+                ${event.event_id}
+            </td>
+
+            <td>
+                ${event.event_type}
+            </td>
+
+            <td>
+                ${event.source_ip || "-"}
+            </td>
+
+            <td>
+                ${event.user_id || "-"}
+            </td>
+
+            <td>
+
+                <span
+                    class="risk ${getRiskClass(
+                        event.severity
+                    )}">
+
+                    ${event.severity}
+
+                </span>
+
+            </td>
+
+            <td>
+                ${event.event_time || "-"}
+            </td>
+
+        </tr>
+
+    `
+        ).join("");
+
+}
+
+
+// ==========================================
+// ADD SECURITY EVENT
+// ==========================================
+
+function openEventForm() {
+
+    const form =
+        document.getElementById(
+            "eventForm"
+        );
+
+
+    form.style.display =
+        form.style.display === "none"
+            ? "block"
+            : "none";
+
+}
+
+
+async function submitEvent() {
+
+    const eventData = {
+
+        event_type:
+            document.getElementById(
+                "eventType"
+            ).value,
+
+        source_ip:
+            document.getElementById(
+                "sourceIP"
+            ).value,
+
+        user_id:
+            document.getElementById(
+                "eventUser"
+            ).value,
+
+        device_id:
+            document.getElementById(
+                "deviceID"
+            ).value,
+
+        description:
+            document.getElementById(
+                "eventDescription"
+            ).value
+
+    };
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_BASE_URL}/events`,
+                {
+
+                    method: "POST",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json"
+
+                    },
+
+                    body:
+                        JSON.stringify(
+                            eventData
+                        )
+
+                }
+            );
+
+
+        if (!response.ok)
+            throw new Error();
+
+
+        alert(
+            "Security event submitted successfully."
+        );
+
+
+        loadEvents();
+        loadDashboard();
+
+    }
+
+    catch {
+
+        alert(
+            "Backend is not connected."
+        );
+
+    }
+
+}
+
+
+// ==========================================
+// THREAT INTELLIGENCE
+// ==========================================
+
+async function loadThreatIntelligence() {
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_BASE_URL}/threat-intelligence`
+            );
+
+
+        if (!response.ok)
+            throw new Error();
+
+
+        const data =
+            await response.json();
+
+
+        document.getElementById(
+            "suspiciousIPs"
+        ).textContent =
+            data.suspicious_ips || 0;
+
+
+        document.getElementById(
+            "suspiciousURLs"
+        ).textContent =
+            data.suspicious_urls || 0;
+
+
+        document.getElementById(
+            "malwareIndicators"
+        ).textContent =
+            data.malware_indicators || 0;
+
+    }
+
+    catch {
+
+        console.log(
+            "Threat intelligence waiting for backend."
+        );
+
+    }
+
+}
+
+
+// ==========================================
+// REPORT
+// ==========================================
+
+async function generateReport() {
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_BASE_URL}/reports/generate`,
+                {
+                    method: "POST"
+                }
+            );
+
+
+        if (!response.ok)
+            throw new Error();
+
+
+        const data =
+            await response.json();
+
+
+        alert(
+            "Incident report generated successfully."
+        );
+
+        console.log(data);
+
+    }
+
+    catch {
+
+        alert(
+            "Backend is not connected."
+        );
+
+    }
+
+}
+
+
+// ==========================================
+// INITIALIZE
+// ==========================================
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        checkBackendStatus();
+
+        loadDashboard();
+
+        loadIncidents();
+
+        loadEvents();
+
+        loadThreatIntelligence();
+
+    }
+);
